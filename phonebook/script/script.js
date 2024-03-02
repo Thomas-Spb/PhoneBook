@@ -123,7 +123,7 @@ const data = [
 
     const buttonGroup = createButtonsGroup([
       {
-        className: 'btn btn-primary mr-3',
+        className: 'btn btn-primary mr-3 js-add',
         type: 'submit',
         text: 'Добавить',
       },
@@ -184,6 +184,7 @@ const data = [
       logo,
       btnAdd: buttonGroup.btns[0],
       formOverlay: form.overlay,
+      form: form.form,
     };
   };
 
@@ -246,33 +247,24 @@ const data = [
     const app = document.querySelector(selectorApp);
     const phoneBook = renderPhoneBook(app, title);
 
-    const { list, logo, btnAdd, formOverlay } = phoneBook;
+    const { list, logo, btnAdd, formOverlay, form } = phoneBook;
     //  Функционал
     const allRow = renderContacts(list, data);
     hoverRow(allRow, logo);
     // console.log(btnAdd);
     // console.log(formOverlay);
 
-    const objEvent = {
-      a: 1,
-      b: 10,
+    btnAdd.addEventListener('click', () => {
+      formOverlay.classList.add('is-visible');
+    });
 
-      handleEvent(event) {
-        if (event.ctrlKey) {
-          this.bar();
-        } else {
-          this.foo();
-        }
-      },
-      bar() {
-        document.body.style.background = 'black';
-      },
-      foo() {
-        formOverlay.classList.add('is-visible');
-      },
-    };
+    form.addEventListener('click', event => {
+      event.stopPropagation();
+    });
 
-    btnAdd.addEventListener('click', objEvent);
+    document.querySelector('.close').addEventListener('click', () => {
+      formOverlay.classList.remove('is-visible');
+    });
 
     formOverlay.addEventListener('click', () => {
       formOverlay.classList.remove('is-visible');
