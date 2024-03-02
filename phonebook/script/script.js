@@ -181,6 +181,9 @@ const data = [
 
     return {
       list: table.tbody,
+      logo,
+      btnAdd: buttonGroup.btns[0],
+      formOverlay: form.overlay,
     };
   };
 
@@ -189,20 +192,33 @@ const data = [
 
     const tdDel = document.createElement('td');
     tdDel.classList.add('delete');
+
     const buttonDel = document.createElement('button');
     buttonDel.classList.add('del-icon');
     tdDel.append(buttonDel);
+
     const tdName = document.createElement('td');
     tdName.textContent = firstName;
+
     const tdSurname = document.createElement('td');
     tdSurname.textContent = surname;
+
     const tdPhone = document.createElement('td');
+
     const phoneLink = document.createElement('a');
     phoneLink.href = `tel:${phone}`;
     phoneLink.textContent = phone;
+    tr.phoneLink = phoneLink;
     tdPhone.append(phoneLink);
 
-    tr.append(tdDel, tdName, tdSurname, tdPhone);
+    const tdEditBtn = document.createElement('button');
+    tdEditBtn.classList.add('btn', 'btn-outline-secondary', 'btn-sm');
+    tdEditBtn.textContent = 'Редактировать';
+
+    const tdEdit = document.createElement('td');
+    tdEdit.append(tdEditBtn);
+
+    tr.append(tdDel, tdName, tdSurname, tdPhone, tdEdit);
 
     return tr;
   };
@@ -210,15 +226,57 @@ const data = [
   const renderContacts = (elem, data) => {
     const allRow = data.map(createRow);
     elem.append(...allRow);
+    return allRow;
+  };
+
+  const hoverRow = (allRow, logo) => {
+    const text = logo.textContent;
+    allRow.forEach(contact => {
+      //   console.log(contact);
+      contact.addEventListener('mouseenter', () => {
+        logo.textContent = contact.phoneLink.textContent;
+      });
+      contact.addEventListener('mouseleave', () => {
+        logo.textContent = text;
+      });
+    });
   };
 
   const init = (selectorApp, title) => {
     const app = document.querySelector(selectorApp);
     const phoneBook = renderPhoneBook(app, title);
 
-    const { list } = phoneBook;
+    const { list, logo, btnAdd, formOverlay } = phoneBook;
+    //  Функционал
+    const allRow = renderContacts(list, data);
+    hoverRow(allRow, logo);
+    // console.log(btnAdd);
+    // console.log(formOverlay);
 
-    renderContacts(list, data);
+    const objEvent = {
+      a: 1,
+      b: 10,
+
+      handleEvent(event) {
+        if (event.ctrlKey) {
+          this.bar();
+        } else {
+          this.foo();
+        }
+      },
+      bar() {
+        document.body.style.background = 'black';
+      },
+      foo() {
+        formOverlay.classList.add('is-visible');
+      },
+    };
+
+    btnAdd.addEventListener('click', objEvent);
+
+    formOverlay.addEventListener('click', () => {
+      formOverlay.classList.remove('is-visible');
+    });
   };
 
   window.phoneBookInit = init;
