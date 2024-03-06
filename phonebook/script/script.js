@@ -22,34 +22,12 @@ const data = [
     phone: '+79876543210',
   },
 ];
-/*
-
-
-const data = [
-    {
-      name: 'Иван',
-      surname: 'Петров',
-      phone: '+79514545454',
-    },
-    {
-      name: 'Игорь',
-      surname: 'Семёнов',
-      phone: '+79999999999',
-    },
-    {
-      name: 'Семён',
-      surname: 'Иванов',
-      phone: '+79800252525',
-    },
-    {
-      name: 'Мария',
-      surname: 'Попова',
-      phone: '+79876543210',
-    },
-  ];
-*/
 
 {
+  const addContactData = contact => {
+    data.push(contact);
+  };
+
   const createHeader = () => {
     const header = document.createElement('header');
     header.classList.add('header');
@@ -337,12 +315,18 @@ const data = [
     });
   };
 
-  const formControl = (form, closeModal) => {
+  const addContactToPage = (contact, list) => {
+    list.append(createRow(contact));
+  };
+
+  const formControl = (form, list, closeModal) => {
     // console.log('form: ', form);
-    form.addEventListener('click', e => {
+    form.addEventListener('submit', e => {
       e.preventDefault();
-      console.log('click');
-      debugger;
+      const formData = new FormData(e.target);
+      const newContact = Object.fromEntries(formData);
+      addContactToPage(newContact, list);
+      addContactData(newContact);
       form.reset();
       closeModal();
     });
@@ -360,7 +344,7 @@ const data = [
     hoverRow(allRow, logo);
     deleteControl(btnDel, list);
     tableSort(thead, list);
-    formControl(form, closeModal);
+    formControl(form, list, closeModal);
     // console.log(btnAdd);
     // console.log(formOverlay);
   };
